@@ -13,21 +13,30 @@ import FinnishConjugator.database.*;
 public class GenerateTable {
     String[] pronoums = {"minä", "sinä", "hän", "se", "me", "te", "he"};
     MySQLAccess db;
+    String[] result;
     
     public GenerateTable(String verb) throws Exception {
         // first read in the database
         db = new MySQLAccess();
-        String[] result = db.readVerb(verb);
-        System.out.println(result.toString());
+        result = db.readVerb(verb);
+        System.out.println("retrieved verb:"+result[2]+" = "+result[3]);
     }
 
     public Object[][] getData() {
-        return null;
+        // test
+        Object[][] data = {
+            {pronoums[0]+" ", result[2]+"n"},
+            {pronoums[1]+" ", result[2]+"t"},
+            {pronoums[2]+" ", result[2]+""}
+        };
+        return data;
         
     }
 
     public String[] getHeader() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //test
+        String[] header = {"p","verb"};
+        return header;
     }
     
     
