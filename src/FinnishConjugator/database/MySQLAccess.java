@@ -8,7 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -20,55 +21,70 @@ public class MySQLAccess {
   private PreparedStatement preparedStatement = null;
   private ResultSet resultSet = null;
 
-  public void readDataBase() throws Exception {
-    try {
-      // This will load the MySQL driver, each DB has its own driver
-      Class.forName("com.mysql.jdbc.Driver");
-      // Setup the connection with the DB
-      connect = DriverManager
-          .getConnection("jdbc:mysql://localhost/conjugator?"
-              + "user=conjugator&password=conjugator");
-
-      // Statements allow to issue SQL queries to the database
-      statement = connect.createStatement();
-      // Result set get the result of the SQL query
-      resultSet = statement
-          .executeQuery("select * from conjugator.verb");
-      writeResultSet(resultSet);
-
-      // PreparedStatements can use variables and are more efficient
-      preparedStatement = connect
-          .prepareStatement("insert into verb (type, name, description) values (?,?,?)");
-      // "myuser, webpage, datum, summary, COMMENTS from conjugator.verb");
-      // Parameters start with 1
-      preparedStatement.setString(1, "4");
-      preparedStatement.setString(2, "haluta");
-      preparedStatement.setString(3, "to want");
-
-      preparedStatement.executeUpdate();
-
-      preparedStatement = connect
-          .prepareStatement("SELECT * from conjugator.verb");
-      resultSet = preparedStatement.executeQuery();
-      writeResultSet(resultSet);
-
-      // Remove again the insert comment
-      preparedStatement = connect
-      .prepareStatement("delete from conjugator.verb where name= ? ; ");
-      preparedStatement.setString(1, "haluta");
-      preparedStatement.executeUpdate();
-      
-      resultSet = statement
-      .executeQuery("select * from conjugator.verb");
-      writeMetaData(resultSet);
-      
-    } catch (Exception e) {
-      throw e;
-    } finally {
-      close();
+    public MySQLAccess() throws Exception {
+        try {
+            // This will load the MySQL driver, each DB has its own driver
+            Class.forName("com.mysql.jdbc.Driver");
+            // Setup the connection with the DB
+            connect = DriverManager
+                .getConnection("jdbc:mysql://localhost/conjugator?"
+                    + "user=conjugator&password=conjugator");
+        } catch (SQLException ex) {
+           Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, " acess database error", ex);
+        }
     }
+  
+  
 
-  }
+//  public void readDataBase() throws Exception {
+//    try {
+//      // This will load the MySQL driver, each DB has its own driver
+//      Class.forName("com.mysql.jdbc.Driver");
+//      // Setup the connection with the DB
+//      connect = DriverManager
+//          .getConnection("jdbc:mysql://localhost/conjugator?"
+//              + "user=conjugator&password=conjugator");
+//
+//      // Statements allow to issue SQL queries to the database
+//      statement = connect.createStatement();
+//      // Result set get the result of the SQL query
+//      resultSet = statement
+//          .executeQuery("select * from conjugator.verb");
+//      writeResultSet(resultSet);
+//
+//      // PreparedStatements can use variables and are more efficient
+//      preparedStatement = connect
+//          .prepareStatement("insert into verb (type, name, description) values (?,?,?)");
+//      // "myuser, webpage, datum, summary, COMMENTS from conjugator.verb");
+//      // Parameters start with 1
+//      preparedStatement.setString(1, "4");
+//      preparedStatement.setString(2, "haluta");
+//      preparedStatement.setString(3, "to want");
+//
+//      preparedStatement.executeUpdate();
+//
+//      preparedStatement = connect
+//          .prepareStatement("SELECT * from conjugator.verb");
+//      resultSet = preparedStatement.executeQuery();
+//      writeResultSet(resultSet);
+//
+//      // Remove again the insert comment
+//      preparedStatement = connect
+//      .prepareStatement("delete from conjugator.verb where name= ? ; ");
+//      preparedStatement.setString(1, "haluta");
+//      preparedStatement.executeUpdate();
+//      
+//      resultSet = statement
+//      .executeQuery("select * from conjugator.verb");
+//      writeMetaData(resultSet);
+//      
+//    } catch (Exception e) {
+//      throw e;
+//    } finally {
+//      close();
+//    }
+//
+//  }
 
   private void writeMetaData(ResultSet resultSet) throws SQLException {
     //   Now get some metadata from the database
@@ -116,5 +132,30 @@ public class MySQLAccess {
 
     }
   }
-
+  
+  // this method reads the database and retrieves one verb row in a string array
+  public String[] readVerb(String verb) throws Exception{
+      try {
+          // Statements allow to issue SQL queries to the database
+          statement = connect.createStatement();
+          // Result set get the result of the SQL query
+          resultSet = statement
+                  .executeQuery("select * from conjugator.verb where name = '"+ verb +"'");
+          
+          // we are going to retrieve only one row
+          resultSet.next();
+          String[] result = new String[resultSet.getMetaData().getColumnCount()];
+          
+          // warning: getString index starts in 1
+          for(int i = 1; i <= result.length; i++){
+              result[i-1] = resultSet.getString(i);
+          }
+          return result;
+      } catch (SQLException ex) {
+          Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, " query database error", ex);
+          throw ex;
+      } finally {
+          close();
+      }
+  }
 } 

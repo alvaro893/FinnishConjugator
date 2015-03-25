@@ -11,7 +11,6 @@ import FinnishConjugator.database.*;
  * @author alvaro
  */
 public class GenerateTable {
-    String[] pronoums = {"minä", "sinä", "hän", "se", "me", "te", "he"};
     MySQLAccess db;
     String[] result;
     
@@ -24,6 +23,7 @@ public class GenerateTable {
 
     public Object[][] getData() {
         // test
+        String[] pronoums = {"minä", "sinä", "hän", "se", "me", "te", "he"};
         Object[][] data = {
             {pronoums[0]+" ", result[2]+"n"},
             {pronoums[1]+" ", result[2]+"t"},
