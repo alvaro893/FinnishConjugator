@@ -22,14 +22,14 @@ public class GenerateTable {
     }
 
     public Object[][] getData() {
+        return null;
         // test
-        String[] pronoums = {"minä", "sinä", "hän", "se", "me", "te", "he"};
-        Object[][] data = {
-            {pronoums[0]+" ", result[2]+"n"},
-            {pronoums[1]+" ", result[2]+"t"},
-            {pronoums[2]+" ", result[2]+""}
-        };
-        return data;
+//        Object[][] data = {
+//            {pronoums[0]+" ", result[2]+"n"},
+//            {pronoums[1]+" ", result[2]+"t"},
+//            {pronoums[2]+" ", result[2]+""}
+//        };
+//        return data;
         
     }
 
