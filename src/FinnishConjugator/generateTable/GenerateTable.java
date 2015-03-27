@@ -11,12 +11,11 @@ import FinnishConjugator.database.*;
  * @author alvaro
  */
 public class GenerateTable {
-    MySQLAccess db;
     String[] result;
     
     public GenerateTable(String verb) throws Exception {
         // first read in the database
-        db = new MySQLAccess();
+        MySQLAccess db = new MySQLAccess();
         result = db.readVerb(verb);
         System.out.println("retrieved verb:"+result[2]+" = "+result[3]);
     }

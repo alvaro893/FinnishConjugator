@@ -43,7 +43,7 @@ public class Verb {
             ending[2] = stem.substring(stem.length()-1, stem.length());
         
         // apply kpt to the stem
-        kpt();
+       // kpt();
     }   
     
     
@@ -78,33 +78,31 @@ public class Verb {
     }
     
     // Apply the kpt rules to a stem of a verb
-    private String kpt(){
-        StringBuilder sb = new StringBuilder(stem);        
-        // vahva is strong, and heikko is weak
-//        Verb-type 1.      Vahva --> Heikko  (minä, sinä, me and te ONLY)
-//        Verb-type 2.      KPT almost never applies.... see the verbs nähdä and tehdä on the next page.
-//        Verb-type 3.      Heikko --> Vahva
-//        Verb-type 4.      Heikko --> Vahva
-//        Verb-type 5.      KPT doesn't apply.
-//        Verb-type 6.      Heikko --> Vahva
-        String[] vahva = {"kk", "pp", "tt", "k", "p", "t", "rt", "lt", "nt", "nk", "mp"};
-        String[] heikko = {"k", "p", "t", "", "v", "d", "rr", "ll", "nn", "ng", "mm"};
-        
-        int indexKpt;
-        for (int i = 0; i < heikko.length; i++) {
-            indexKpt = stem.indexOf(vahva[i]);
-            if(indexKpt != -1){
-                sb.delete(indexKpt, indexKpt+1);
-               return sb.insert(indexKpt, heikko[i]).toString();
-            }else
-                return null;
-            
-        }
-        
-            
-
-        return null;
-    }
+//    private void kpt(){
+//        StringBuilder sb = new StringBuilder(stem);        
+//        // vahva is strong, and heikko is weak
+////        Verb-type 1.      Vahva --> Heikko  (minä, sinä, me and te ONLY)
+////        Verb-type 2.      KPT almost never applies.... see the verbs nähdä and tehdä on the next page.
+////        Verb-type 3.      Heikko --> Vahva
+////        Verb-type 4.      Heikko --> Vahva
+////        Verb-type 5.      KPT doesn't apply.
+////        Verb-type 6.      Heikko --> Vahva
+//        String[] vahva = {"kk", "pp", "tt", "k", "p", "t", "rt", "lt", "nt", "nk", "mp"};
+//        String[] heikko = {"k", "p", "t", "", "v", "d", "rr", "ll", "nn", "ng", "mm"};
+//        // position to start is the middle of the string
+//        int startPosition = 0;//(int) Math.floor((double)stem.length()/2);
+//        // position where the kpt was found
+//        int indexKpt;
+//        
+//        for (int i = 0; i < heikko.length; i++) {
+//            indexKpt = stem.indexOf(vahva[i], startPosition);
+//            if(indexKpt != -1){
+//                sb.delete(indexKpt, indexKpt+1);
+//                stem = sb.insert(indexKpt, heikko[i]).toString();
+//                break;
+//            }
+//        }
+//     }
     
     // Stands for declare if the current objet verb is an ö,ä,y word or not
     private boolean checkVocalHarmony(){

@@ -21,7 +21,7 @@ public class MySQLAccess {
   private PreparedStatement preparedStatement = null;
   private ResultSet resultSet = null;
 
-    public MySQLAccess() throws Exception {
+    public MySQLAccess() throws SQLException, ClassNotFoundException {
         try {
             // This will load the MySQL driver, each DB has its own driver
             Class.forName("com.mysql.jdbc.Driver");
