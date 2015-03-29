@@ -73,11 +73,7 @@ public class MainWindow extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    new ConjugatedVerbWindow(verbField.getText().trim());
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, "Verb not found");
-                }
+                new ConjugatedVerbWindow(verbField.getText().trim()); 
             }
         });
         

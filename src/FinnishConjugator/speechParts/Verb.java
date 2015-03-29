@@ -4,7 +4,7 @@
  *  http://people.uta.fi/~km56049/finnish/verbs.html
  */
 
-package FinnishConjugator.generateTable;
+package FinnishConjugator.speechParts;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,11 +14,12 @@ import java.util.regex.Pattern;
  * @author alvaro
  */
 public class Verb {
-    String verb; //verb in infinitive
-    String stem; //stem of the verb
-    int type; //the type of the verb
-    boolean dottedVerb;
+    public String verb; //verb in infinitive
+    public String stem; //stem of the verb
+    public int type; //the type of the verb
+    public boolean dottedVerb;
     private final String[] pronoums = {"minä", "sinä", "hän", "me", "te", "he"};
+    private final String[] negative = {"en", "et", "ei", "emme", "ette", "eivät"};
     private String[] ending;
     
     /* constructor */ 
@@ -122,13 +123,18 @@ public class Verb {
     
     
     /* public methods */
-    public String[] getPresent(){
+    public String[][] getPresent(){
        
         // add to the string array
-        String[] result = new String[pronoums.length];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = pronoums[i] + " " + stem + ending[i];
+        int length = pronoums.length;
+        String[][] result = new String[length][2];
+        for (int i = 0; i < length; i++) {
+            result[i][0] = pronoums[i] + " " + stem + ending[i];
         }
+        for(int i = 0; i < length; i++){
+            result[i][1] = negative[i] + " " + stem;
+        }
+
         return result;
     }
 }

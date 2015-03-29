@@ -4,8 +4,9 @@
  * and open the template in the editor.
  */
 
-package FinnishConjugator.generateTable;
+package FinnishConjugator.speechParts;
 
+import FinnishConjugator.speechParts.Verb;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -81,11 +82,13 @@ public class VerbTest {
         Integer result = (Integer)instance.getPresent().length;
         System.out.println(Arrays.deepToString(instance.getPresent()));
         assertEquals(expResult, result);
-        assertEquals("hän puhuu", instance.getPresent()[2]);
+        assertEquals("hän puhuu", instance.getPresent()[2][0]);
+        assertEquals("ei puhu", instance.getPresent()[2][1]);
         
         instance = new Verb("syödä", 2);  
         System.out.println(Arrays.deepToString(instance.getPresent()));
-        assertEquals("hän syö", instance.getPresent()[2]);
+        assertEquals("hän syö", instance.getPresent()[2][0]);
+        assertEquals("ei syö", instance.getPresent()[2][1]);        
     }
     
 //    @Test
