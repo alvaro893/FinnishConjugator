@@ -10,7 +10,10 @@ grant all on conjugator.* to 'conjugator'@'localhost' identified by 'conjugator'
 -- table for verbs
 create table if not exists verb(
 	id int primary key not null auto_increment,
-	type int,
+	type int unsigned not null,
     name varchar(100),
     description text
 );
+
+-- this make each verb unique
+CREATE UNIQUE INDEX  `idx_verb_name`  ON `conjugator`.`verb` (name) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT 
