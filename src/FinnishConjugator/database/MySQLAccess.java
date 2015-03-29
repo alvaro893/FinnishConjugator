@@ -115,7 +115,7 @@ public class MySQLAccess {
   }
 
   // You need to close the resultSet
-  private void close() {
+  public void close() {
     try {
       if (resultSet != null) {
         resultSet.close();
@@ -134,7 +134,7 @@ public class MySQLAccess {
   }
   
   // this method reads the database and retrieves one verb row in a string array
-  public String[] readVerb(String verb) throws Exception{
+  public String[] readVerb(String verb) throws SQLException{
       try {
           // Statements allow to issue SQL queries to the database
           statement = connect.createStatement();
@@ -154,8 +154,33 @@ public class MySQLAccess {
       } catch (SQLException ex) {
           Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, " query database error", ex);
           throw ex;
-      } finally {
-          close();
+      }
+  }
+  public boolean insertVerb(String verb, int type, String description) throws SQLException{
+      try {
+          preparedStatement = connect.prepareStatement("insert into verb (type,"
+                  + " name, description) values (?,?,?)");
+          
+          preparedStatement.setInt(1, type);
+          preparedStatement.setString(2, verb);
+          preparedStatement.setString(3, description);
+          preparedStatement.executeUpdate();
+          return true;
+      } catch (SQLException ex) {
+          return false;
+      }
+  }
+  
+  public boolean deleteVerb(String verb) throws SQLException{
+      try {
+          preparedStatement = connect
+      .prepareStatement("delete from verb where name=?;");
+      preparedStatement.setString(1, verb);
+      preparedStatement.executeUpdate();
+      return true;
+      
+      } catch (SQLException ex) {
+          return false;
       }
   }
 } 

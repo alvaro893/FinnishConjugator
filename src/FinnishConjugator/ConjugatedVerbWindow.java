@@ -1,3 +1,4 @@
+
 /*
  * This class will display the conjugation from input user
  * using a Jtable
@@ -7,7 +8,6 @@ package FinnishConjugator;
 
 import FinnishConjugator.speechParts.Verb;
 import FinnishConjugator.database.MySQLAccess;
-import com.mysql.jdbc.exceptions.MySQLDataException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -20,6 +20,7 @@ import javax.swing.*;
 public class ConjugatedVerbWindow extends JFrame {
      Object [] [] data;
      String [] header;
+      MySQLAccess db;
      
     public ConjugatedVerbWindow(String input){
         super(input);
@@ -31,7 +32,7 @@ public class ConjugatedVerbWindow extends JFrame {
         };*/
         // first read in the database
         try {
-            MySQLAccess db = new MySQLAccess();
+            db = new MySQLAccess();
             String[] result = db.readVerb(input);
             System.out.println("retrieved verb:" + result[2] + " = " + result[3]);
 
@@ -61,7 +62,9 @@ public class ConjugatedVerbWindow extends JFrame {
          } catch (Exception ex) {
              Logger.getLogger(ConjugatedVerbWindow.class.getName()).
                      log(Level.SEVERE, null, ex);
-         }
+         } finally {
+           db.close();
+        }
     }
     
     private void addToData(Verb v){
