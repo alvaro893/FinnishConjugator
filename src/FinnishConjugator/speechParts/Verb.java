@@ -72,7 +72,7 @@ public class Verb {
                     break;
             case 6: stem = verb.substring(0,verb.length()-2) + "ne";
                     break;
-            // omly tehda and nahda
+            // only tehda and nahda
             case 7: stem = verb.substring(0, verb.length()-3) + "ke" ;
         } 
             
