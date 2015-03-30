@@ -16,4 +16,4 @@ create table if not exists verb(
 );
 
 -- this make each verb unique
-CREATE UNIQUE INDEX  `idx_verb_name`  ON `conjugator`.`verb` (name) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT 
+CREATE UNIQUE INDEX  `idx_verb_name`  ON `conjugator`.`verb` (name)

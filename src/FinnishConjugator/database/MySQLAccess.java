@@ -21,7 +21,7 @@ public class MySQLAccess {
   private PreparedStatement preparedStatement = null;
   private ResultSet resultSet = null;
 
-    public MySQLAccess() throws SQLException, ClassNotFoundException {
+    public MySQLAccess() throws ClassNotFoundException {
         try {
             // This will load the MySQL driver, each DB has its own driver
             Class.forName("com.mysql.jdbc.Driver");
@@ -30,7 +30,14 @@ public class MySQLAccess {
                 .getConnection("jdbc:mysql://localhost/conjugator?"
                     + "user=conjugator&password=conjugator");
         } catch (SQLException ex) {
-           Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, " acess database error", ex);
+            try {
+                // Try another connection
+                connect = DriverManager
+                        .getConnection("jdbc:mysql://mysql.metropolia.fi/alvarob?"
+                                + "user=alvarob&password=123456");
+            } catch (SQLException ex1) {
+                Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, null, ex1);
+            }
         }
     }
   

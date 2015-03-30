@@ -91,15 +91,20 @@ public class VerbTest {
         assertEquals("ei syö", instance.getPresent()[2][1]);        
     }
     
-//    @Test
-//    public void testKpt(){
-//        System.out.println("--testkpt--");
-//        instance = new Verb("auttaa", 1);  
-//        System.out.println(Arrays.deepToString(instance.getPresent()));
-//        assertEquals("minä autan", instance.getPresent()[0]);
-//        assertEquals("sinä autat", instance.getPresent()[1]);
-//        assertEquals("hän auttaa", instance.getPresent()[2]);
-//        
-//    }
+    @Test
+    public void testKpt(){
+        System.out.println("--testkpt--");
+        instance = new Verb("Ymmärtää", 1);  
+        assertEquals("Ymmärrä", instance.kpt());
+        instance = new Verb("lukea", 1); 
+        assertEquals("lue", instance.kpt());
+         instance = new Verb("tehdä", 7); 
+        assertEquals("tee", instance.kpt());
+        instance = new Verb("auttaa", 1);  
+        assertEquals("minä autan", instance.getPresent()[0][0]);
+        assertEquals("sinä autat", instance.getPresent()[1][0]);
+        assertEquals("hän auttaa", instance.getPresent()[2][0]);
+        
+    }
     
 }

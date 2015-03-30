@@ -6,6 +6,7 @@
 
 package FinnishConjugator.speechParts;
 
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -79,31 +80,49 @@ public class Verb {
     }
     
     // Apply the kpt rules to a stem of a verb
-//    private void kpt(){
-//        StringBuilder sb = new StringBuilder(stem);        
-//        // vahva is strong, and heikko is weak
-////        Verb-type 1.      Vahva --> Heikko  (minä, sinä, me and te ONLY)
-////        Verb-type 2.      KPT almost never applies.... see the verbs nähdä and tehdä on the next page.
-////        Verb-type 3.      Heikko --> Vahva
-////        Verb-type 4.      Heikko --> Vahva
-////        Verb-type 5.      KPT doesn't apply.
-////        Verb-type 6.      Heikko --> Vahva
-//        String[] vahva = {"kk", "pp", "tt", "k", "p", "t", "rt", "lt", "nt", "nk", "mp"};
-//        String[] heikko = {"k", "p", "t", "", "v", "d", "rr", "ll", "nn", "ng", "mm"};
-//        // position to start is the middle of the string
-//        int startPosition = 0;//(int) Math.floor((double)stem.length()/2);
-//        // position where the kpt was found
-//        int indexKpt;
-//        
-//        for (int i = 0; i < heikko.length; i++) {
-//            indexKpt = stem.indexOf(vahva[i], startPosition);
-//            if(indexKpt != -1){
-//                sb.delete(indexKpt, indexKpt+1);
-//                stem = sb.insert(indexKpt, heikko[i]).toString();
-//                break;
-//            }
-//        }
-//     }
+    public String kpt(){
+        StringBuilder sb = new StringBuilder(stem);        
+        // vahva is strong, and heikko is weak
+//        Verb-type 1.      Vahva --> Heikko  (minä, sinä, me and te ONLY)
+//        Verb-type 2.      KPT almost never applies.... see the verbs nähdä and tehdä on the next page.
+//        Verb-type 3.      Heikko --> Vahva
+//        Verb-type 4.      Heikko --> Vahva
+//        Verb-type 5.      KPT doesn't apply.
+//        Verb-type 6.      Heikko --> Vahva
+        String[] vahva = {"kk", "pp", "tt", "k", "p", "t", "rt", "lt", "nt", "nk", "mp"};
+        String[] heikko = {"k", "p", "t", "", "v", "d", "rr", "ll", "nn", "ng", "mm"};
+        
+        // vahva goes as a key and heikko as a value
+        HashMap<String, String> rule = new HashMap<>();
+        
+        for (int i = 0; i < vahva.length; i++) {
+                rule.put(vahva[i], heikko[i]);
+        }
+        
+        String matched = null;
+        for (String key: rule.keySet()) {
+            /*System.out.println("key:"+key+"-"+
+            stem.replace(key, rule.get(key)));//test*/            
+            String result = stem.replace(key, rule.get(key));
+            // if result dont macht stem we found something
+            if(!result.equals(stem))
+                // skip if the kpt was found in the firs letter of the stem
+                if(!(key.length() == 1 && stem.charAt(0) == key.charAt(0)))
+                    // we priorice the doble character kpt in order to avoid
+                    // for instance change a 'k' inside of 'kk'
+                    if(key.length() > 1){
+                        return result;
+                    }else{
+                        matched = result;
+                    }     
+        }
+        if(matched != null)
+            return matched;
+        else
+            return stem;
+        
+        
+     }
     
     // Stands for declare if the current objet verb is an ö,ä,y word or not
     private boolean checkVocalHarmony(){
@@ -129,8 +148,18 @@ public class Verb {
         int length = pronoums.length;
         String[][] result = new String[length][2];
         for (int i = 0; i < length; i++) {
-            result[i][0] = pronoums[i] + " " + stem + ending[i];
+            // kpt in han(2) and he(5)
+            if(i == 2 || i == 5)
+                result[i][0] = pronoums[i] + " " + stem + ending[i];
+            else
+                result[i][0] = pronoums[i] + " " + kpt() + ending[i];
         }
+        // fix for olla verb
+        if(type == 0){
+            result[2][0] = pronoums[2] + " " + "on";
+            result[5][0] = pronoums[5] + " " + "ovät";
+        }
+        // negative column
         for(int i = 0; i < length; i++){
             result[i][1] = negative[i] + " " + stem;
         }

@@ -4,6 +4,9 @@ use conjugator;
 
 insert into verb (type, name, description) values
 
+-- olla is unique case here
+(0, 'olla', 'to be'),
+
 (1, 'puhua', 'to talk, to speak'),
 (1, 'sanoa', 'to say'),
 (1, 'istua', 'to sit'),
@@ -34,4 +37,9 @@ insert into verb (type, name, description) values
 (5, 'valita', 'to choose'),
 
 (6, 'vaaleta', 'to whiten'),
-(6, 'lämmetä', 'to become warm');
+(6, 'lämmetä', 'to become warm'),
+
+(7, 'nähdä', 'to see'),
+(7, 'tehdä', 'to do, to make');
+
+
