@@ -33,8 +33,8 @@ public class MySQLAccess {
             try {
                 // Try another connection
                 connect = DriverManager
-                        .getConnection("jdbc:mysql://mysql.metropolia.fi/alvarob?"
-                                + "user=alvarob&password=123456");
+                        .getConnection("jdbc:mysql://84.249.218.41/conjugator?"
+                                + "user=conjugator&password=conjugator");
             } catch (SQLException ex1) {
                 Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, null, ex1);
             }
