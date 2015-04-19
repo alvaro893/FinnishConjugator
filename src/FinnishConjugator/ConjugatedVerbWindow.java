@@ -21,7 +21,7 @@ public class ConjugatedVerbWindow extends JFrame {
     String[] header;
     MySQLAccess db;
 
-    public ConjugatedVerbWindow(String input, MySQLAccess db) {
+    public ConjugatedVerbWindow(String input, MySQLAccess db) throws Exception {
         super(input);
 
 // first read in the database
@@ -54,7 +54,7 @@ public class ConjugatedVerbWindow extends JFrame {
         }
     }
 
-    private void addToData(Verb v) {
+    private void addToData(Verb v) throws Exception {
         String[][] present = v.getPresent();
         data = new Object[present.length][2];
 

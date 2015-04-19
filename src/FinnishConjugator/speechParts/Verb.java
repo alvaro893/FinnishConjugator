@@ -80,7 +80,9 @@ public class Verb {
     }
     
     // Apply the kpt rules to a stem of a verb
-    public String kpt(){
+    // if vahva is true this method applies kpt from vahva to heikko
+    public String kpt(String stem, boolean isVahva){
+        
         StringBuilder sb = new StringBuilder(stem);        
         // vahva is strong, and heikko is weak
 //        Verb-type 1.      Vahva --> Heikko  (minä, sinä, me and te ONLY)
@@ -89,14 +91,25 @@ public class Verb {
 //        Verb-type 4.      Heikko --> Vahva
 //        Verb-type 5.      KPT doesn't apply.
 //        Verb-type 6.      Heikko --> Vahva
+        // as you can see some kpt are doble letters, they must be prioriced
+        // before the single kpt letters in order to avoid issues
         String[] vahva = {"kk", "pp", "tt", "k", "p", "t", "rt", "lt", "nt", "nk", "mp"};
         String[] heikko = {"k", "p", "t", "", "v", "d", "rr", "ll", "nn", "ng", "mm"};
+        
         
         // vahva goes as a key and heikko as a value
         HashMap<String, String> rule = new HashMap<>();
         
-        for (int i = 0; i < vahva.length; i++) {
-                rule.put(vahva[i], heikko[i]);
+        // if true vahva array will be keys in the hash map
+        // otherwise heikko will be the keys
+        if(isVahva == true){
+            for (int i = 0; i < vahva.length; i++) {
+                    rule.put(vahva[i], heikko[i]);
+            }
+        }else{
+            for (int i = 0; i < vahva.length; i++) {
+                    rule.put(heikko[i], vahva[i]);
+            }       
         }
         
         String matched = null;
@@ -120,7 +133,6 @@ public class Verb {
             return matched;
         else
             return stem;
-        
         
      }
     
@@ -147,13 +159,29 @@ public class Verb {
         // add to the string array
         int length = pronoums.length;
         String[][] result = new String[length][2];
-        for (int i = 0; i < length; i++) {
+        boolean isVahva;
+                
+        if(type == 1 || type == 2 || type == 7 ){
+            isVahva = true;
+            for (int i = 0; i < length; i++) {
             // kpt in han(2) and he(5)
             if(i == 2 || i == 5)
                 result[i][0] = pronoums[i] + " " + stem + ending[i];
             else
-                result[i][0] = pronoums[i] + " " + kpt() + ending[i];
+                result[i][0] = pronoums[i] + " " + kpt(stem, isVahva) + ending[i];
+            }
+        }else if(type == 3 || type == 4 || type == 6){
+            isVahva = false;
+            for (int i = 0; i < length; i++) {
+                result[i][0] = pronoums[i] + " " + kpt(stem, isVahva) + ending[i];
+            }
+        }else{
+            for (int i = 0; i < length; i++) {
+                result[i][0] = pronoums[i] + " " + stem + ending[i];
+            }
         }
+        
+        
         // fix for olla verb
         if(type == 0){
             result[2][0] = pronoums[2] + " " + "on";
@@ -166,4 +194,66 @@ public class Verb {
 
         return result;
     }
+    
+    public String[][] getImperfect() throws Exception{
+        StringBuilder sb = new StringBuilder(stem);
+        char lastCh = stem.charAt(stem.length()-1);
+        switch(type){
+            case 1:
+            case 3:
+            case 5:
+                if(lastCh == 'o' || lastCh == 'ö' || lastCh == 'u' || lastCh == 'y')
+                    sb.append('i');
+                if(lastCh == 'a' || lastCh == 'ä' || lastCh == 'e' || lastCh == 'i'){
+                    sb.deleteCharAt(stem.length()-1);
+                    sb.append('i');
+                }
+                break;
+            case 2:
+            case 7:
+                if(!verb.equals("uida") || !verb.equals("voida") || !verb.equals("imuroida")){
+                    sb.deleteCharAt(stem.length()-1);
+                    sb.append('i');
+                }
+                break;
+            case 4:
+                sb.deleteCharAt(stem.length()-1);
+                sb.append("si");
+                break;
+            default:
+                Exception e = null;
+                throw e;
+        }
+        
+        String iStem = sb.toString();
+        int length = pronoums.length;
+        String[][] result = new String[length][2];
+        boolean isVahva;
+                
+        if(type == 1 || type == 2 || type == 7 ){
+            isVahva = true;
+            for (int i = 0; i < length; i++) {
+            // kpt in han(2) and he(5)
+            if(i == 2 || i == 5)
+                result[i][0] = pronoums[i] + " " + iStem + ending[i];
+            else
+                result[i][0] = pronoums[i] + " " + kpt(iStem, isVahva) + ending[i];
+            }
+        }else if(type == 3 || type == 4 || type == 6){
+            isVahva = false;
+            for (int i = 0; i < length; i++) {
+                result[i][0] = pronoums[i] + " " + kpt(iStem, isVahva) + ending[i];
+            }
+        }else{
+            for (int i = 0; i < length; i++) {
+                result[i][0] = pronoums[i] + " " + iStem + ending[i];
+            }
+    }
+        // negative column
+        for(int i = 0; i < length; i++){
+            result[i][1] = negative[i] + " " + iStem;
+        }
+
+        return result;
+    }  
 }

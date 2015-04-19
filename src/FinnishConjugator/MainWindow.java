@@ -72,7 +72,11 @@ public class MainWindow extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                new ConjugatedVerbWindow(verbField.getText().trim(), db);
+                try {
+                    new ConjugatedVerbWindow(verbField.getText().trim(), db);
+                } catch (Exception ex) {
+                    Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
 

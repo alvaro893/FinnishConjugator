@@ -1,7 +1,9 @@
-
-
 package FinnishConjugator.database;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -10,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -23,75 +26,36 @@ public class MySQLAccess {
 
     public MySQLAccess() throws ClassNotFoundException {
         try {
-            // This will load the MySQL driver, each DB has its own driver
-            Class.forName("com.mysql.jdbc.Driver");
+            // This will load the MySQL/SQLite driver, each DB has its own driver
+            Class.forName("org.sqlite.JDBC");
             // Setup the connection with the DB
             connect = DriverManager
-                .getConnection("jdbc:mysql://localhost/conjugator?"
-                    + "user=conjugator&password=conjugator");
-        } catch (SQLException ex) {
-            try {
-                // Try another connection
-                connect = DriverManager
-                        .getConnection("jdbc:mysql://84.249.218.41/conjugator?"
-                                + "user=conjugator&password=conjugator");
-            } catch (SQLException ex1) {
-                Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, null, ex1);
+                .getConnection("jdbc:sqlite:database.db");
+            
+            // This create database if don't exist without destroying the 
+            // the user data
+            try{
+                statement = connect.createStatement();
+            resultSet = statement
+                  .executeQuery("select * from verb where name = '"+ "puhua" +"'");
+            statement = connect.createStatement();
+            } catch (Exception ex) {
+                try {
+                String sql = readFile("sqlFiles/sqlite.sql", Charset.forName("UTF-8"));
+                statement.executeUpdate(sql);
+                } catch (IOException ex2) {
+                    JOptionPane.showMessageDialog(null, "sql database file not found");
+                }
             }
+            
+            
+        } catch (SQLException ex) {
+            
         }
     }
   
   
 
-//  public void readDataBase() throws Exception {
-//    try {
-//      // This will load the MySQL driver, each DB has its own driver
-//      Class.forName("com.mysql.jdbc.Driver");
-//      // Setup the connection with the DB
-//      connect = DriverManager
-//          .getConnection("jdbc:mysql://localhost/conjugator?"
-//              + "user=conjugator&password=conjugator");
-//
-//      // Statements allow to issue SQL queries to the database
-//      statement = connect.createStatement();
-//      // Result set get the result of the SQL query
-//      resultSet = statement
-//          .executeQuery("select * from conjugator.verb");
-//      writeResultSet(resultSet);
-//
-//      // PreparedStatements can use variables and are more efficient
-//      preparedStatement = connect
-//          .prepareStatement("insert into verb (type, name, description) values (?,?,?)");
-//      // "myuser, webpage, datum, summary, COMMENTS from conjugator.verb");
-//      // Parameters start with 1
-//      preparedStatement.setString(1, "4");
-//      preparedStatement.setString(2, "haluta");
-//      preparedStatement.setString(3, "to want");
-//
-//      preparedStatement.executeUpdate();
-//
-//      preparedStatement = connect
-//          .prepareStatement("SELECT * from conjugator.verb");
-//      resultSet = preparedStatement.executeQuery();
-//      writeResultSet(resultSet);
-//
-//      // Remove again the insert comment
-//      preparedStatement = connect
-//      .prepareStatement("delete from conjugator.verb where name= ? ; ");
-//      preparedStatement.setString(1, "haluta");
-//      preparedStatement.executeUpdate();
-//      
-//      resultSet = statement
-//      .executeQuery("select * from conjugator.verb");
-//      writeMetaData(resultSet);
-//      
-//    } catch (Exception e) {
-//      throw e;
-//    } finally {
-//      close();
-//    }
-//
-//  }
 
   private void writeMetaData(ResultSet resultSet) throws SQLException {
     //   Now get some metadata from the database
@@ -147,7 +111,7 @@ public class MySQLAccess {
           statement = connect.createStatement();
           // Result set get the result of the SQL query
           resultSet = statement
-                  .executeQuery("select * from conjugator.verb where name = '"+ verb +"'");
+                  .executeQuery("select * from verb where name = '"+ verb +"'");
           
           // we are going to retrieve only one row
           resultSet.next();
@@ -190,4 +154,12 @@ public class MySQLAccess {
           return false;
       }
   }
+  
+//  Function to read the sql file
+  private static String readFile(String path, Charset encoding) 
+  throws IOException {
+    byte[] encoded = Files.readAllBytes(Paths.get(path));
+    return new String(encoded, encoding);
+  }
+  
 } 

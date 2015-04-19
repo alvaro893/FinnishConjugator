@@ -91,20 +91,30 @@ public class VerbTest {
         assertEquals("ei syö", instance.getPresent()[2][1]);        
     }
     
+//    @Test
+//    public void testKpt(){
+//        System.out.println("--testkpt--");
+//        instance = new Verb("Ymmärtää", 1);  
+//        assertEquals("Ymmärrä", instance.kpt(true));
+//        instance = new Verb("lukea", 1); 
+//        assertEquals("lue", instance.kpt(true));
+//         instance = new Verb("tehdä", 7); 
+//        assertEquals("tee", instance.kpt(true));
+//        
+//        instance = new Verb("auttaa", 1);  
+//        assertEquals("minä autan", instance.getPresent()[0][0]);
+//        assertEquals("sinä autat", instance.getPresent()[1][0]);
+//        assertEquals("hän auttaa", instance.getPresent()[2][0]);
+//        
+//        instance = new Verb("pidetä", 6);
+//        assertEquals("pitene", instance.kpt(false));
+//        
+//    }
+    
     @Test
-    public void testKpt(){
-        System.out.println("--testkpt--");
+    public void testGetImperfect() throws Exception{
         instance = new Verb("Ymmärtää", 1);  
-        assertEquals("Ymmärrä", instance.kpt());
-        instance = new Verb("lukea", 1); 
-        assertEquals("lue", instance.kpt());
-         instance = new Verb("tehdä", 7); 
-        assertEquals("tee", instance.kpt());
-        instance = new Verb("auttaa", 1);  
-        assertEquals("minä autan", instance.getPresent()[0][0]);
-        assertEquals("sinä autat", instance.getPresent()[1][0]);
-        assertEquals("hän auttaa", instance.getPresent()[2][0]);
-        
+        assertEquals("minä Ymmärrin", instance.getImperfect()[0][0]);
     }
     
 }
