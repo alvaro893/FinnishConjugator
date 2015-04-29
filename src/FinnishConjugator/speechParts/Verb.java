@@ -13,6 +13,7 @@ public class Verb extends Word {
 
     public String verb; //verb in infinitive
     public String stem; //stem of the verb
+    public String participleStem; // sten of the participles form
     public int type; //the type of the verb
     public String[] activePastParticipe;
     private final String[] pronoums = {"minä", "sinä", "hän", "me", "te", "he"};
@@ -34,7 +35,7 @@ public class Verb extends Word {
 
         // this handles the stem
         applyVerbTypeRules();
-        
+
         // this initialize activePastParticipe atributte
         setActivePastParticipe();
 
@@ -60,74 +61,84 @@ public class Verb extends Word {
             // case 0 is the verb olla
             case 0:
                 stem = "ole";
+                participleStem = "ol";
                 break;
             // remove the last a/ä
             case 1:
                 stem = verb.substring(0, verb.length() - 1);
+                participleStem = stem;
                 break;
             //remove the last 2 char
             case 2:
                 stem = verb.substring(0, verb.length() - 2);
+                participleStem = stem;
                 break;
             case 3:
-                stem = verb.substring(0, verb.length() - 2) + "e";
+                participleStem = verb.substring(0, verb.length() - 2);
+                stem = participleStem + "e";
                 break;
             // remove the 't'
             case 4:
-                stem = sb.deleteCharAt(sb.length() - 1).toString();
+                participleStem = verb.substring(0, verb.length() - 2);
+                stem = participleStem + "a";
                 break;
             case 5:
-                stem = verb.substring(0, verb.length() - 2) + "tse";
+                participleStem = verb.substring(0, verb.length() - 2);
+                stem = participleStem + "tse";
                 break;
             case 6:
-                stem = verb.substring(0, verb.length() - 2) + "ne";
+                participleStem = verb.substring(0, verb.length() - 2);
+                stem = participleStem + "ne";
                 break;
-            // only tehda and nahda
+            // only tehdä and nähda
             case 7:
+                // participle stem is teh- and näh-
+                participleStem = verb.substring(0, verb.length() - 2);
                 stem = verb.substring(0, verb.length() - 3) + "ke";
         }
 
     }
-    
+
     // this finds the active past
-    private void setActivePastParticipe(){
+    private void setActivePastParticipe() {
         // set local variables
-        StringBuilder sb = new StringBuilder(stem);
+        StringBuilder sb = new StringBuilder(participleStem);
         String[] ending = new String[2];
-        
+
         // the active past participe depends of the verb type
-        switch(type){
+        switch (type) {
             case 1:
             case 2:
-                if(dottedWord)
+                if (dottedWord) {
                     ending[0] = "nyt";
-                else
+                } else {
                     ending[0] = "nut";
-                
+                }
+
                 ending[1] = "neet";
                 break;
+            case 0:
             case 3:
-                // the last 'e' of the type 3 must be deleted 
-                sb.deleteCharAt(sb.length() - 1);
                 // using the last consonant of the stem to get the forms:
                 // nut, lut, rut, etc and neet, leet, etc
                 char c = sb.charAt(sb.length() - 1);
-                if(dottedWord)
+                if (dottedWord) {
                     ending[0] = c + "yt";
-                else
+                } else {
                     ending[0] = c + "ut";
-                
+                }
+
                 ending[1] = c + "eet";
                 break;
             case 4:
-                // the last consonant of the type 4 must be deleted 
-                sb.deleteCharAt(sb.length() - 1);
             case 5:
-                if(dottedWord)
+            case 6:
+                if (dottedWord) {
                     ending[0] = "nnyt";
-                else
+                } else {
                     ending[0] = "nnut";
-                
+                }
+
                 ending[1] = "nneet";
                 break;
         }
@@ -181,32 +192,59 @@ public class Verb extends Word {
     }
 
     public String[][] getImperfect() throws Exception {
-        
+
         StringBuilder sb = new StringBuilder(stem);
-        char lastCh = stem.charAt(stem.length() - 1);
+        int lastChIdx = stem.length() - 1;
+        char lastCh = stem.charAt(lastChIdx);
         switch (type) {
+            case 0:
             case 1:
+                // TODO: page 213 of the book, implement silables
+
+                if (stem.matches("nt(aa|ää)|lt(aa|ää)|rt(aa|ää)")) {
+                    sb.substring(0, lastChIdx);
+                    sb.append("si");
+                }
             case 3:
             case 5:
+            case 6:
                 if (lastCh == 'o' || lastCh == 'ö' || lastCh == 'u' || lastCh == 'y') {
                     sb.append('i');
                 }
                 if (lastCh == 'a' || lastCh == 'ä' || lastCh == 'e' || lastCh == 'i') {
-                    sb.deleteCharAt(stem.length() - 1);
+                    sb.deleteCharAt(lastChIdx);
                     sb.append('i');
                 }
                 break;
             case 2:
             case 7:
-                if (!verb.equals("käydä")) {
-                    sb.deleteCharAt(stem.length() - 1);
-                    sb.append('i');
-                } else {
-                    sb = new StringBuilder("käv");
+                switch (verb) {
+                    case "käydä":
+                        sb = new StringBuilder("käv");
+                        break;
+                    case "uidä":
+                        sb = new StringBuilder("ui");
+                        break;
+                    default:
+                        char ch = sb.charAt(lastChIdx - 1);
+                        if (ch == 'u' || ch == 'y') {
+                            if (dottedWord) {
+                                sb.replace(lastChIdx - 1, lastChIdx + 1, "öi"); //syödä
+                            } else {
+                                sb.replace(ch, lastChIdx, "oi");
+                            }
+                        } else if (ch == 'i') {
+                            sb.replace(lastChIdx - 1, lastChIdx + 1, "ei"); //viedä
+                        } else {
+                            sb.deleteCharAt(lastChIdx);
+                            sb.append('i');
+                        }
+                        break;
                 }
                 break;
             case 4:
-                sb.deleteCharAt(stem.length() - 1);
+                // this removes the last 'a'
+                sb.deleteCharAt(lastChIdx);
                 sb.append("si");
                 break;
             default:
@@ -246,17 +284,53 @@ public class Verb extends Word {
             case 2:
                 for (int i = 0; i < length; i++) {
                     String negativeEnding;
-                    if(i < 3){
-                        if(dottedWord)
+                    if (i < 3) {
+                        if (dottedWord) {
                             negativeEnding = "nyt";
-                        else
+                        } else {
                             negativeEnding = "nut";
-                    }else
-                    result[i][1] = negative[i] + " " + stem;
+                        }
+                    } else {
+                        result[i][1] = negative[i] + " " + stem;
+                    }
                 }
                 break;
         }
 
         return result;
     }
+
+    public String[][] getPerfect() {
+        String[][] result = new String[pronoums.length][2];
+        String[] verbOllaPresent = {"olen", "olet", "on", "olemme", "olette", "olevat"};
+        
+        // positive part
+        for(int i = 0; i < verbOllaPresent.length; i++){
+            // j is for separete plural pronoums from singular ones
+            int j;
+            if(i > 2){
+                j = 1;
+            }else{
+                j = 0;
+            }
+            
+            result[i][0] = pronoums[i] + " " + verbOllaPresent[i] + " " + activePastParticipe[j];
+        }
+        
+        // negaive part
+        for(int i = 0; i < verbOllaPresent.length; i++){
+            // j is for separete plural pronoums from singular ones
+            int j;
+            if(i > 2){
+                j = 1;
+            }else{
+                j = 0;
+            }
+            
+            result[i][1] = negative[i] + " " + "ole" + " " + activePastParticipe[j];
+        }
+        return result;
+    }
+
+    
 }
