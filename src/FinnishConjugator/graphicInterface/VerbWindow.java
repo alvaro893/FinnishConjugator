@@ -1,10 +1,36 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * The MIT License
+ *
+ * Copyright 2015 Alvaro.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
+
 package FinnishConjugator.graphicInterface;
 
+import FinnishConjugator.database.MySQLAccess;
+import FinnishConjugator.speechParts.Verb;
+import java.sql.SQLException;
+import java.util.Arrays;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -15,8 +41,57 @@ public class VerbWindow extends javax.swing.JFrame {
     /**
      * Creates new form VerbWindow
      */
-    public VerbWindow() {
+    public VerbWindow(String input, MySQLAccess db) throws Exception {
+        super(input);
+        
+        // dont touch this
         initComponents();
+        
+        // get the verb object
+        Verb v = readFromDatabase(input, db);
+        
+        // set the tables
+        setTable(v.getPresent(), this.presentTable);
+        setTable(v.getImperfect(), this.pastTable);
+        setTable(v.getPerfect(), this.perfectTable);
+        setTable(v.getPluscuamperfect(), this.pastPerfectTable);
+        
+        this.setVisible(true);
+    }
+
+    private Verb readFromDatabase(String input, MySQLAccess db) {
+        // first read in the database
+        try {
+            this.db = db;
+            String[] result = db.readVerb(input);
+            System.out.println("retrieved verb:" + result[2] + " = " + result[3]);
+
+            // Obtain the verb object
+            Verb v = new Verb(result[2], result[1]);
+            return v;
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Verb not found");
+            return null;
+        }
+    }
+
+    private void setTable(String[][] data, JTable table) throws Exception {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        
+        // clear table
+        model.setRowCount(0);
+        
+        // fill this table
+        for(String[] row : data){
+            model.addRow(row);
+        }
+//        for (int j = 0; j < 2; j++) {
+//            for (int i = 0; i < data.length; i++) {
+//                data[i][j] = data[i][j];
+//            }
+//        }
+        System.out.println("data:" + Arrays.deepToString(data));
     }
 
     /**
@@ -29,23 +104,24 @@ public class VerbWindow extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        presentTable = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        pastTable = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTable3 = new javax.swing.JTable();
+        perfectTable = new javax.swing.JTable();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable4 = new javax.swing.JTable();
+        pastPerfectTable = new javax.swing.JTable();
         jLabel4 = new javax.swing.JLabel();
         cancelButton = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
-        jTable1.setBorder(new javax.swing.border.MatteBorder(null));
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        presentTable.setBorder(new javax.swing.border.MatteBorder(null));
+        presentTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
                 {null, null},
@@ -66,8 +142,8 @@ public class VerbWindow extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jTable1.setAutoscrolls(false);
-        jScrollPane1.setViewportView(jTable1);
+        presentTable.setAutoscrolls(false);
+        jScrollPane1.setViewportView(presentTable);
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Present tense (Presens)");
@@ -77,7 +153,7 @@ public class VerbWindow extends javax.swing.JFrame {
         jLabel2.setText("Past tense (Imperfekti)");
         jLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        pastTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
                 {null, null},
@@ -98,13 +174,13 @@ public class VerbWindow extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane2.setViewportView(jTable2);
+        jScrollPane2.setViewportView(pastTable);
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("Present Perfect tense (Perfekti)");
         jLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+        perfectTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
                 {null, null},
@@ -125,9 +201,9 @@ public class VerbWindow extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane3.setViewportView(jTable3);
+        jScrollPane3.setViewportView(perfectTable);
 
-        jTable4.setModel(new javax.swing.table.DefaultTableModel(
+        pastPerfectTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
                 {null, null},
@@ -148,7 +224,7 @@ public class VerbWindow extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane4.setViewportView(jTable4);
+        jScrollPane4.setViewportView(pastPerfectTable);
 
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("Past Perfect tense (Pluskvamperfekti)");
@@ -227,40 +303,9 @@ public class VerbWindow extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(VerbWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(VerbWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(VerbWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(VerbWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new VerbWindow().setVisible(true);
-            }
-        });
-    }
+   // non swing fields
+    Object[][] data;
+    MySQLAccess db;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
@@ -272,9 +317,9 @@ public class VerbWindow extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JTable jTable3;
-    private javax.swing.JTable jTable4;
+    private javax.swing.JTable pastPerfectTable;
+    private javax.swing.JTable pastTable;
+    private javax.swing.JTable perfectTable;
+    private javax.swing.JTable presentTable;
     // End of variables declaration//GEN-END:variables
 }

@@ -166,4 +166,12 @@ public class VerbTest {
         assertEquals(expected, instance.getPerfect()[3][0]);
     }
     
+    @Test
+    public void testGetPluscuamperfect(){
+        System.out.println("--testActivePastParticipe--");
+        instance = new Verb("tulla", 3);
+        String expected = "me olimme tulleet";
+        assertEquals(expected, instance.getPluscuamperfect()[3][0]);
+    }
+    
 }

@@ -1,7 +1,25 @@
 /*
- *  This class stands for making all the necesary verb operations
- *  this document has fine infoemation  about finnish verbs
- *  http://people.uta.fi/~km56049/finnish/verbs.html
+ * The MIT License
+ *
+ * Copyright 2015 Alvaro.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 package FinnishConjugator.speechParts;
 
@@ -278,24 +296,32 @@ public class Verb extends Word {
             }
         }
         // negative column
+        for (int i = 0; i < negative.length; i++) {
+            int j = 0;
 
-        switch (type) {
-            case 1:
-            case 2:
-                for (int i = 0; i < length; i++) {
-                    String negativeEnding;
-                    if (i < 3) {
-                        if (dottedWord) {
-                            negativeEnding = "nyt";
-                        } else {
-                            negativeEnding = "nut";
-                        }
-                    } else {
-                        result[i][1] = negative[i] + " " + stem;
-                    }
-                }
-                break;
+            if (i > 2) {
+                j = 1;
+            }
+
+            result[i][1] = negative[i] + " " + activePastParticipe[j];
         }
+//        switch (type) {
+//            case 1:
+//            case 2:
+//                for (int i = 0; i < length; i++) {
+//                    String negativeEnding;
+//                    if (i < 3) {
+//                        if (dottedWord) {
+//                            negativeEnding = "nyt";
+//                        } else {
+//                            negativeEnding = "nut";
+//                        }
+//                    } else {
+//                        result[i][1] = negative[i] + " " + stem;
+//                    }
+//                }
+//                break;
+//        }
 
         return result;
     }
@@ -303,34 +329,65 @@ public class Verb extends Word {
     public String[][] getPerfect() {
         String[][] result = new String[pronoums.length][2];
         String[] verbOllaPresent = {"olen", "olet", "on", "olemme", "olette", "olevat"};
-        
+
         // positive part
-        for(int i = 0; i < verbOllaPresent.length; i++){
+        for (int i = 0; i < verbOllaPresent.length; i++) {
             // j is for separete plural pronoums from singular ones
             int j;
-            if(i > 2){
+            if (i > 2) {
                 j = 1;
-            }else{
+            } else {
                 j = 0;
             }
-            
+
             result[i][0] = pronoums[i] + " " + verbOllaPresent[i] + " " + activePastParticipe[j];
         }
-        
+
         // negaive part
-        for(int i = 0; i < verbOllaPresent.length; i++){
+        for (int i = 0; i < verbOllaPresent.length; i++) {
             // j is for separete plural pronoums from singular ones
             int j;
-            if(i > 2){
+            if (i > 2) {
                 j = 1;
-            }else{
+            } else {
                 j = 0;
             }
-            
+
             result[i][1] = negative[i] + " " + "ole" + " " + activePastParticipe[j];
         }
         return result;
     }
 
-    
+    public String[][] getPluscuamperfect() {
+        String[][] result = new String[pronoums.length][2];
+        String[] verbOllaPast = {"olin", "olit", "oli", "olimme", "olitte", "olivat"};
+
+        // positive part
+        for (int i = 0; i < verbOllaPast.length; i++) {
+            // j is for separete plural pronoums from singular ones
+            int j;
+            if (i > 2) {
+                j = 1;
+            } else {
+                j = 0;
+            }
+
+            result[i][0] = pronoums[i] + " " + verbOllaPast[i] + " " + activePastParticipe[j];
+        }
+
+        // negaive part
+        for (int i = 0; i < verbOllaPast.length; i++) {
+            // j is for separete plural pronoums from singular ones
+            int j;
+            if (i > 2) {
+                j = 1;
+            } else {
+                j = 0;
+            }
+
+            result[i][1] = negative[i] + " " + "oli" + " " + activePastParticipe[j];
+        }
+        return result;
+    }
+
 }
