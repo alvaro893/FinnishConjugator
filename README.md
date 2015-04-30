@@ -6,4 +6,4 @@ In the future also it will declinate nouns and handle other speech parts.
 
 The code is in Java and devoped with Netbeans IDE.
 
-![Alt sc](/screenshot.png)
+![Alt sc](/screenshoot.png)
