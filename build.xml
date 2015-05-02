@@ -10,6 +10,14 @@
 <project name="FinnishConjugator" default="default" basedir=".">
     <description>Builds, tests, and runs the project FinnishConjugator.</description>
     <import file="nbproject/build-impl.xml"/>
+    
+    <!--My custom sql files-->
+    <target name="-post-compile">
+        <copy todir="${dist.dir}/sqlFiles">
+            <fileset dir="sqlFiles" includes="**"/>
+        </copy>
+    </target>
+    
     <!--
 
     There exist several targets which are by default empty and which can be 

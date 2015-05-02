@@ -1,2 +1,4 @@
 /dist/
 /database.db
+/build
+/nbproject/private
